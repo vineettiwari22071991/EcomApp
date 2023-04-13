@@ -1,7 +1,12 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import Header from '../common/Header';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Keyboard,
+} from 'react-native';
 import Home from './tabs/Home';
 import Search from './tabs/Search';
 import WishList from './tabs/WishList';
@@ -10,6 +15,28 @@ import User from './tabs/User';
 
 const HomeScreen = () => {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       {selectedTab === 0 ? (
@@ -24,78 +51,80 @@ const HomeScreen = () => {
         <User />
       )}
 
-      <View style={styles.bottomView}>
-        <TouchableOpacity
-          style={styles.bottomTab}
-          onPress={() => {
-            setSelectedTab(0);
-          }}>
-          <Image
-            style={styles.bottomIcon}
-            source={
-              selectedTab === 0
-                ? require('../images/home_fill.png')
-                : require('../images/home.png')
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.bottomTab}
-          onPress={() => {
-            setSelectedTab(1);
-          }}>
-          <Image
-            style={styles.bottomIcon}
-            source={
-              selectedTab === 1
-                ? require('../images/search_fill.png')
-                : require('../images/search.png')
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.bottomTab}
-          onPress={() => {
-            setSelectedTab(2);
-          }}>
-          <Image
-            style={styles.bottomIcon}
-            source={
-              selectedTab === 2
-                ? require('../images/heart_fill.png')
-                : require('../images/heart.png')
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.bottomTab}
-          onPress={() => {
-            setSelectedTab(3);
-          }}>
-          <Image
-            style={styles.bottomIcon}
-            source={
-              selectedTab === 3
-                ? require('../images/user_fill.png')
-                : require('../images/user.png')
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.bottomTab}
-          onPress={() => {
-            setSelectedTab(4);
-          }}>
-          <Image
-            style={styles.bottomIcon}
-            source={
-              selectedTab === 4
-                ? require('../images/bell_fill.png')
-                : require('../images/bell.png')
-            }
-          />
-        </TouchableOpacity>
-      </View>
+      {!isKeyboardVisible && (
+        <View style={styles.bottomView}>
+          <TouchableOpacity
+            style={styles.bottomTab}
+            onPress={() => {
+              setSelectedTab(0);
+            }}>
+            <Image
+              style={styles.bottomIcon}
+              source={
+                selectedTab === 0
+                  ? require('../images/home_fill.png')
+                  : require('../images/home.png')
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bottomTab}
+            onPress={() => {
+              setSelectedTab(1);
+            }}>
+            <Image
+              style={styles.bottomIcon}
+              source={
+                selectedTab === 1
+                  ? require('../images/search_fill.png')
+                  : require('../images/search.png')
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bottomTab}
+            onPress={() => {
+              setSelectedTab(2);
+            }}>
+            <Image
+              style={styles.bottomIcon}
+              source={
+                selectedTab === 2
+                  ? require('../images/heart_fill.png')
+                  : require('../images/heart.png')
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bottomTab}
+            onPress={() => {
+              setSelectedTab(3);
+            }}>
+            <Image
+              style={styles.bottomIcon}
+              source={
+                selectedTab === 3
+                  ? require('../images/user_fill.png')
+                  : require('../images/user.png')
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bottomTab}
+            onPress={() => {
+              setSelectedTab(4);
+            }}>
+            <Image
+              style={styles.bottomIcon}
+              source={
+                selectedTab === 4
+                  ? require('../images/bell_fill.png')
+                  : require('../images/bell.png')
+              }
+            />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

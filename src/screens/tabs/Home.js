@@ -1,28 +1,27 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  Dimensions,
-  Image,
-  Text,
-} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import Header from '../../common/Header';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {addPorducts} from '../../redux/slices/ProductSlice';
+import CommonProductList from '../../common/CommonProductList';
 const Home = () => {
   const navigation = useNavigation();
   const [productList, setProductList] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getProductList();
   }, []);
+
 
   const getProductList = () => {
     fetch('https://fakestoreapi.com/products')
       .then(res => res.json())
       .then(json => {
         setProductList(json);
+        dispatch(addPorducts(json));
       });
   };
 
@@ -36,31 +35,7 @@ const Home = () => {
           navigation.openDrawer();
         }}
       />
-
-      <FlatList
-        data={productList}
-        renderItem={({item, index}) => {
-          return (
-            <View key={item.id} style={styles.productItem}>
-              <Image source={{uri: item.image}} style={styles.itemImage} />
-              <View style={styles.itemDetail}>
-                <Text style={styles.name}>
-                  {item.title.length > 20
-                    ? item.title.substring(0, 20) + '...'
-                    : item.tile}
-                </Text>
-                <Text style={styles.desc}>
-                  {item.description.length > 30
-                    ? item.description.substring(0, 30) + '...'
-                    : item.description}
-                </Text>
-                <Text style={styles.price}>{'$' + item.price}</Text>
-                <Text style={styles.category}>{item.category}</Text>
-              </View>
-            </View>
-          );
-        }}
-      />
+      <CommonProductList itemList={productList} />
     </View>
   );
 };
